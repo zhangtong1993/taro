@@ -73,6 +73,24 @@ ruleTester.run('jsx-handler-names', rule, {
     },
     {
       code: testComponent(`<View src={this.state.img} />`)
+    },
+    {
+      code: testComponent(`<Image src={this.props.img} />`)
+    },
+    {
+      code: testComponent(`<Image src={this.$router.img} />`)
+    },
+    {
+      code: testComponent(`<Image src={this.$router.params.title} />`)
+    },
+    {
+      code: testComponent(`<Text src={this.config.navbarTitle}></Text>`)
+    },
+    {
+      code: testComponent(`<Text src={this.config.navbarTitle}></Text>`)
+    },
+    {
+      code: testComponent(`<AtNavBar src={this.config.navbarTitle} />`)
     }
   ],
   invalid: [{
@@ -101,6 +119,12 @@ ruleTester.run('jsx-handler-names', rule, {
     errors: [{ message: ERROR_MESSAGE }]
   }, {
     code: testComponent(`<View oTest={this.props.onClick} />`),
+    errors: [{ message: ERROR_MESSAGE }]
+  }, {
+    code: testComponent(`<View handleClick={this.stateChange} />`),
+    errors: [{ message: ERROR_MESSAGE }]
+  }, {
+    code: testComponent(`<View handleClick={this.propsChange} />`),
     errors: [{ message: ERROR_MESSAGE }]
   }]
 })

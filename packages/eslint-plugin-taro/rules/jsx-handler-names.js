@@ -25,14 +25,16 @@ module.exports = {
         const propKey = typeof node.name === 'object' ? node.name.name : node.name
         const source = sourceCode.getText(node.value.expression)
 
-        if (propKey === 'ref' || propKey === 'key') {
+        if (propKey === 'key') {
           return
         }
 
         const propIsEventHandler = PROP_EVENT_HANDLER_REGEX.test(propKey)
         const isPropValueFunction = source.startsWith('this.props.on') ||
-          (source.startsWith('this.') &&
-          !source.startsWith('this.state'))
+          (
+            source.startsWith('this.') &&
+            !['this.state.', 'this.props.', 'this.$router.', 'this.config'].some(v => source.startsWith(v))
+          )
 
         if (!propIsEventHandler && isPropValueFunction) {
           context.report({

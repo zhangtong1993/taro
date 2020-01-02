@@ -1,5 +1,6 @@
+import 'weui'
 import Nerv from 'nervjs'
-import _ from '../../../utils/parse-type'
+import { isNumber, isBoolean, isString, isFunction } from '../../utils/parse-type'
 import classNames from 'classnames'
 
 /**
@@ -28,24 +29,24 @@ function parseType (props) {
     throw new TypeError(type)
   }
 
-  if (min) _.isNumber(min) ? '' : throwErrorMsg('min')
-  if (max) _.isNumber(max) ? '' : throwErrorMsg('max')
-  if (step) _.isNumber(step) ? '' : throwErrorMsg('step')
-  if (value) _.isNumber(value) ? '' : throwErrorMsg('value')
-  if (blockSize) _.isNumber(blockSize) ? '' : throwErrorMsg('blockSize')
+  if (min) isNumber(min) ? '' : throwErrorMsg('min')
+  if (max) isNumber(max) ? '' : throwErrorMsg('max')
+  if (step) isNumber(step) ? '' : throwErrorMsg('step')
+  if (value) isNumber(value) ? '' : throwErrorMsg('value')
+  if (blockSize) isNumber(blockSize) ? '' : throwErrorMsg('blockSize')
 
-  if (disabled) _.isBoolean(disabled) ? '' : throwErrorMsg('disabled')
-  if (showValue) _.isBoolean(showValue) ? '' : throwErrorMsg('showValue')
+  if (disabled) isBoolean(disabled) ? '' : throwErrorMsg('disabled')
+  if (showValue) isBoolean(showValue) ? '' : throwErrorMsg('showValue')
 
   if (backgroundColor) {
-    _.isString(backgroundColor) ? '' : throwErrorMsg('backgroundColor')
+    isString(backgroundColor) ? '' : throwErrorMsg('backgroundColor')
   }
 
-  if (activeColor) _.isString(activeColor) ? '' : throwErrorMsg('activeColor')
-  if (blockColor) _.isString(blockColor) ? '' : throwErrorMsg('blockColor')
+  if (activeColor) isString(activeColor) ? '' : throwErrorMsg('activeColor')
+  if (blockColor) isString(blockColor) ? '' : throwErrorMsg('blockColor')
 
-  if (onChange) _.isFunction(onChange) ? '' : throwErrorMsg('onChange')
-  if (onChanging) _.isFunction(onChanging) ? '' : throwErrorMsg('onChanging')
+  if (onChange) isFunction(onChange) ? '' : throwErrorMsg('onChange')
+  if (onChanging) isFunction(onChanging) ? '' : throwErrorMsg('onChanging')
 }
 
 class Slider extends Nerv.Component {
@@ -76,6 +77,7 @@ class Slider extends Nerv.Component {
     this.handleTouchStart = this.handleTouchStart.bind(this)
     this.handleTouchMove = this.handleTouchMove.bind(this)
     this.handleTouchEnd = this.handleTouchEnd.bind(this)
+    this.updateValue = this.updateValue.bind(this)
   }
 
   componentDidMount () {
@@ -165,7 +167,7 @@ class Slider extends Nerv.Component {
             enumerable: true,
             value: {
               detail: e.detail,
-              value: percent
+              value: this.state.value
             }
           })
           if (onChanging) onChanging(e)
@@ -186,6 +188,13 @@ class Slider extends Nerv.Component {
       touchId: false,
       ogPercent: 0
     }, () => {
+      Object.defineProperty(e, 'detail', {
+        enumerable: true,
+        value: {
+          detail: e.detail,
+          value: this.state.value
+        }
+      })
       if (onChange) onChange(e)
     })
   }
